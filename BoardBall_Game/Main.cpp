@@ -7,121 +7,81 @@
 #define MAX_LOADSTRING 100
 
 // Global Variables:
-HINSTANCE hInst;                                // current instance - идентификатор (или указатель) на экземпляр вашего приложения, которое выполняется операционной системой Windows
-WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text - массив символов широкого формата, который будет использоваться для хранения заголовка (названия) чего-то, например, окна или приложения 
-WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name - массив символов широкого формата, который будет использоваться для хранения класса окна (Window Class), который определяет атрибуты и стиль окна в вашем Windows-приложении. Этот класс окна обычно используется при регистрации окна в Windows API, чтобы определить, как окно будет отображаться и вести себя в системе.
+HINSTANCE hInst;                                
+WCHAR szTitle[MAX_LOADSTRING];                   
+WCHAR szWindowClass[MAX_LOADSTRING]; 
+
+const int Global_Scale = 3;
+const int Level_X_Offset = 8;
+const int Level_Y_Offset = 6;
+const int Brick_Width = 15;
+const int Brick_Height = 7;
+const int Ceil_Width = 16;
+const int Ceil_Height = 8;
 //------------------------------------------------------------------------------------------------------------
-// Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 //------------------------------------------------------------------------------------------------------------
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance,// hInstance: дескриптор (или указатель) на экземпляр вашего приложения.
-                     _In_opt_ HINSTANCE hPrevInstance,//Устаревший параметр, обычно игнорируется.
-                     _In_ LPWSTR    lpCmdLine,//Строка аргументов командной строки
-                     _In_ int       nCmdShow)//Флаг, определяющий, как окно должно быть показано (свернуто, развернуто и т.д.).
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
+                     _In_opt_ HINSTANCE hPrevInstance,
+                     _In_ LPWSTR    lpCmdLine,
+                     _In_ int       nCmdShow)
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
-    /*Вызов UNREFERENCED_PARAMETER(...) является способом сообщить компилятору что этот параметр не используется в коде и предотвратить генерацию предупреждения о неиспользуемом
-       параметре.*/
-  
-    // Initialize global strings
+   
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_BOARDBALLGAME, szWindowClass, MAX_LOADSTRING);
-    /*После выполнения функции LoadStringW, строка ресурса с идентификатором IDC_BOARDBALL будет скопирована в буфер szWindowClass. Эта строка может быть использована в коде для различных целей, например, для установки атрибутов класса окна приложения
-    используется для загрузки строки из ресурсов исполняемого файла или разделяемой библиотеки (DLL) в память программы. 
-    Буква "W" в имени функции указывает на то, что это версия функции для работы с широкими символами (UTF-16).
-    Функция LoadStringW возвращает количество загруженных символов. 
-    Если загрузка прошла успешно, это число будет равно длине загруженной строки без учета завершающего нулевого символа. 
-    Если функция не смогла загрузить строку, возвращается 0.*/
-
-  /* hInstance: Дескриптор экземпляра модуля (EXE или DLL), содержащего ресурсы, из которого будет загружена строка.
-    IDS_APP_TITLE: Идентификатор строки, которую вы хотите загрузить. Этот идентификатор связан с ресурсами в ресурсном файле приложения.
-    szTitle: Указатель на буфер, в который будет загружена строка.
-    MAX_LOADSTRING: Максимальная длина буфера в символах (включая завершающий нулевой символ).
-    MyRegisterClass(hInstance);*/
 
     MyRegisterClass(hInstance);
 
-    // Perform application initialization:
     if (!InitInstance (hInstance, nCmdShow))
     {
         return FALSE;
     }
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_BOARDBALLGAME));
-    /*загружает таблицу ускорителей из ресурсов приложения с идентификатором IDC_BOARDBALLGAME и присваивает ее переменной hAccelTable, чтобы она могла быть использована при обработке ускорителей клавиш (например, горячих клавиш) в приложении.*/
-
+    
     MSG msg;
-    //структура для хранения информации о сообщениях, поступающих в оконную процедуру Windows-приложения
-
-    /*Структура MSG обычно содержит следующие поля:
-    hwnd: Дескриптор(handle) окна, для которого предназначено сообщение.
-    message : Идентификатор сообщения, который определяет тип сообщения(например, WM_CLOSE для закрытия окна).
-    wParam : Дополнительный параметр, связанный с сообщением, который может использоваться для передачи информации.
-    lParam : Дополнительный параметр, связанный с сообщением, который также может использоваться для передачи информации.
-    time : Время, когда сообщение было отправлено или получено.
-    pt : Координаты курсора в момент отправки сообщения.
-    MSG обычно используется в цикле обработки сообщений Windows(message loop), который ожидает и обрабатывает сообщения, поступающие в ваше приложение.Это позволяет вашему приложению реагировать на события, такие как нажатие клавиш, перемещение мыши, закрытие окон и многие другие.*/
-
-    // Main message loop:
-    while (GetMessage(&msg, nullptr, 0, 0))////ожидает новое сообщение
+   
+    while (GetMessage(&msg, nullptr, 0, 0))
     {
         if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
             TranslateMessage(&msg);
-            /* TranslateMessage(&msg) : используется для обработки сообщений ввода, таких как WM_KEYDOWN и WM_KEYUP, и преобразования их в символы, если это необходимо.Она не вызывает оконную процедуру WndProc.Ее основная цель - обработать ввод, который может быть использован в окне*/
             DispatchMessage(&msg);
-				/*DispatchMessage отправляет сообщение в оконную процедуру(WndProc) окна, которому принадлежит сообщение.Она передает параметры из структуры MSG в оконную процедуру, позволяя приложению обработать сообщение.*/
         }
     }
-    //Цикл обработки сообщений продолжает работать до тех пор, пока функция GetMessage не возвращает сообщение с типом WM_QUIT.
 
     return (int) msg.wParam;
-    // Программа завершает выполнение, возвращая код завершения в вызывающий процесс
 }
 //------------------------------------------------------------------------------------------------------------
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {//подготавлиявет структуру окна szWindowClass
- /*
- Параметр hInstance, который передается в функцию MyRegisterClass, представляет дескриптор экземпляра модуля, содержащего ресурсы и код приложения. 
- В контексте Windows API это важный параметр, который идентифицирует приложение или библиотеку DLL, использующую данную функцию.
- Каждый запущенный экземпляр приложения имеет свой уникальный дескриптор экземпляра (HINSTANCE). 
- Этот дескриптор используется для доступа к ресурсам, таким как иконки, строки,курсоры, и для идентификации приложения в системе.
- */
+ 
    WNDCLASSEXW wcex;
-   /*
-   Структура WNDCLASSEXW является частью Windows API и используется для определения атрибутов класса окна перед его регистрацией с помощью функции RegisterClassExW. 
-   Эта структура позволяет определить различные свойства окна, такие как стиль окна, обработчик сообщений, иконки, курсоры, фоновая кисть и другие атрибуты.
-   */
+  
    wcex.cbSize = sizeof(WNDCLASSEX);
 
-   wcex.style          = CS_HREDRAW | CS_VREDRAW;// Стиль окна. Этот стиль определяет поведение и внешний вид окон, созданных на основе данного класса.
-   wcex.lpfnWndProc    = WndProc;// Указатель на обработчик сообщений (WndProc), который будет вызываться для обработки сообщений, связанных с окном.
-   wcex.cbClsExtra     = 0;//обозначает количество дополнительных байт, выделяемых после структуры класса окна для каждого окна этого класса.
-   wcex.cbWndExtra     = 0;//дополнительное количество байт памяти, выделяемых для каждого экземпляра окна, созданного на основе данного класса. Этот параметр обычно используется для хранения пользовательских данных, связанных с каждым окном.
-   wcex.hInstance      = hInstance;//Дескриптор экземпляра модуля, содержащего ресурсы и код приложения.
-   wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_BOARDBALLGAME));//определяет иконку, используемую в качестве значка приложения. Значок обычно отображается в левом верхнем углу окна приложения и в панели задач.
-   wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);// Дескриптор курсора, который будет отображаться, когда указатель мыши находится над окном.
-   wcex.hbrBackground  = CreateSolidBrush(RGB(0, 0, 0) );//установка цвета окна -> возвращает handle кисти. Фоновая кисть окна, используемая для заливки клиентской области окна
-   wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_BOARDBALLGAME);// Указатель на имя меню, связанное с окном.
-   wcex.lpszClassName  = szWindowClass;//Уникальное имя класса окна которое подготавливается в этой струкутре
-   wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));//определяет маленькую значок приложения, который отображается в левом верхнем углу окна приложения и в панели задач при выполнении приложения
+   wcex.style          = CS_HREDRAW | CS_VREDRAW;
+   wcex.lpfnWndProc    = WndProc;
+   wcex.cbClsExtra     = 0;
+   wcex.cbWndExtra     = 0;
+   wcex.hInstance      = hInstance;
+   wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_BOARDBALLGAME));
+   wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
+   wcex.hbrBackground  = CreateSolidBrush(RGB(0, 0, 0) );
+   wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_BOARDBALLGAME);
+   wcex.lpszClassName  = szWindowClass;
+   wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
    return RegisterClassExW(&wcex);
-   /*
-   Функция RegisterClassExW из Windows API используется для регистрации нового класса окна, который определяет внешний вид и поведение окон, 
-   созданных на основе этого класса. Зарегистрированные классы используются для создания и управления окнами в приложениях под Windows.
-   Функция RegisterClassExW возвращает тип ATOM, который представляет собой уникальный идентификатор зарегистрированного класса окна. 
-   Этот идентификатор используется при создании окон на основе данного класса.
-   */
 }
 //------------------------------------------------------------------------------------------------------------
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)//Saves instance handle and creates main window
 {
-   //In this function, we save the instance handle in a global variable and create and display the main program window.
 
    hInst = hInstance; // Store instance handle in our global variable
 
@@ -131,16 +91,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)//Saves instance handle and 
    window_rect.right = 320 * 3;
    window_rect.bottom = 200 * 3;
 
-   AdjustWindowRect(&window_rect, WS_OVERLAPPEDWINDOW, TRUE);//(указалеть на прямоугольник, тип окна, имеет ли меню)
+   AdjustWindowRect(&window_rect, WS_OVERLAPPEDWINDOW, TRUE);
 
-   //szWindowClass - класс окна -> структура описывающая параметры окна
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       0, 0, window_rect.right - window_rect.left, window_rect.bottom - window_rect.top, nullptr, nullptr, hInstance, nullptr);//создаем окно с учетом коррекции координат его вершин
-   /*
-   функция создает окно на основе зарегистрированного класса окна, используя функцию CreateWindowExW. 
-   Она принимает параметры, такие как стиль окна, заголовок, размеры, позицию, родительское окно (если есть), и т.д.
-   jWnd это объект, который представляет собой дескриптор (handle) созданного окна на основе класса окна, зарегистрированного пользователем. 
-   */
+   
    if (!hWnd)
    {
       return FALSE;
@@ -148,36 +103,52 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)//Saves instance handle and 
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
-   //Обычно вызывается ShowWindow сначала, чтобы установить начальное состояние отображения окна, 
-   //а затем UpdateWindow, чтобы обеспечить немедленное обновление содержимого окна.
+  
    return TRUE;
+}
+//------------------------------------------------------------------------------------------------------------
+void Draw_Brick(HDC hdc, int x, int y, bool is_blue)
+{
+   HPEN pen;
+   HBRUSH brush;
+
+   if (is_blue)
+   {
+      brush = CreateSolidBrush(RGB(62, 71, 202) );
+      pen = CreatePen(PS_SOLID, 0, RGB(62, 71, 202) );
+   }
+   else
+   {
+      brush = CreateSolidBrush(RGB(235, 28, 35) );
+      pen = CreatePen(PS_SOLID, 0, RGB(235, 28, 35) );
+   }
+
+   SelectObject(hdc, pen);
+   SelectObject(hdc, brush);
+   Rectangle(hdc, x * Global_Scale, y * Global_Scale, (x + Brick_Width) * Global_Scale, (y + Brick_Height) * Global_Scale);
+
 }
 //------------------------------------------------------------------------------------------------------------
 void Draw_Frame(HDC hdc)
 {//отрисовка экрана игры
 
+   int i, j;
+   
+   for (i = 0; i < 14; i++)
+      for (j = 0; j < 12; j++)
+         Draw_Brick(hdc, Level_X_Offset + Ceil_Width * j, Level_Y_Offset + Ceil_Height * i, true);
 }
 //------------------------------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)//Processes messages for the main window.
 {
    //оконная процедура для обработки сообщений полученных от ОС
-   /*
-   оконная процедура -> вызывается операционной системой Windows для обработки различных сообщений, связанных с окнами, которые созданы в вашем приложении. 
-   Эта функция играет важную роль в обработке пользовательского ввода, управлении окнами, 
-   реагировании на системные события и других аспектах взаимодействия между пользователем и приложением.
-   */
-
-   /*
-   hWnd: Дескриптор окна, для которого было получено сообщение.
-   message: Идентификатор сообщения, которое нужно обработать (например, WM_COMMAND, WM_PAINT и т.д.).
-   wParam и lParam: Дополнительные параметры, связанные с сообщением.
-   */
+  
     switch (message)
     {
     case WM_COMMAND://описывает пункт выбора меню
         {
             int wmId = LOWORD(wParam);
-            // Parse the menu selections:
+        
             switch (wmId)
             {
             case IDM_ABOUT:
@@ -193,20 +164,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)/
         break;
     case WM_PAINT://Запрос программе на отрисовку
         {
-          PAINTSTRUCT ps;//содержит информацию о процессе перерисовки окна, и координаты области обновления извлекаются системой Windows и сохраняются в PAINTSTRUCT во время обработки сообщения WM_PAINT.
-          /*Когда окно нуждается в перерисовке (например, из-за изменения данных или других событий), система Windows создает сообщение WM_PAINT, 
-          которое включает в себя информацию о прямоугольнике, который нужно перерисовать. Эта информация содержится в структуре PAINTSTRUCT, 
-          переданной в функцию BeginPaint.*/
-
-          //ps.rcPaint из структуры PAINTSTRUCT представляет собой координаты прямоугольника, который определяет 
-          //область обновления (область, которая должна быть перерисована) в клиентской области окна
+          PAINTSTRUCT ps;
           HDC hdc = BeginPaint(hWnd, &ps);
-          // TODO: Add any drawing code that uses hdc here...
-          //hdc - handle of device context -> номер в области окна в которой будет отрисована графика
-          //hdc ассоциирован с окном hWnd и используется для перерисовки этого окна.
-
-          /*Обработчик сообщения WM_PAINT выполняется с помощью вызова функции BeginPaint, которая инициализирует структуру PAINTSTRUCT, 
-          включая rcPaint, который содержит координаты области обновления. Это происходит автоматически внутри BeginPaint.*/
+          
           Draw_Frame(hdc);
           EndPaint(hWnd, &ps);
         }
