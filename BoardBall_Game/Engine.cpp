@@ -115,10 +115,10 @@ void Draw_Platform(HDC hdc, int x, int y)
    //3.Отрисовка дуги
    SelectObject(hdc, Highlight_Pen);
 
-   Arc(hdc, (x + 1) * Global_Scale, (y + 1) * Global_Scale,
+  /* Arc(hdc, (x + 1) * Global_Scale, (y + 1) * Global_Scale,
             (x + Circle_Size - 1) * Global_Scale, (y + Circle_Size - 1) * Global_Scale,
             (x + 2) * Global_Scale, (y + 1) * Global_Scale,
-            x * Global_Scale, (y + 3) * Global_Scale);
+            x * Global_Scale, (y + 3) * Global_Scale);*/
 }
 //------------------------------------------------------------------------------------------------------------
 void Draw_Frame(HDC hdc)
