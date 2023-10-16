@@ -34,15 +34,27 @@ const int Cell_Height = 8;
 HPEN Brick_Blue_Pen, Brick_Red_Pen;
 HBRUSH Brick_Blue_Brush, Brick_Red_Brush;
 
+const int Circle_Size = 7;
+int Inner_Width = 21;
+
+HPEN Platform_Circle_Pen, Platform_Inner_Pen, Highlight_Pen;
+HBRUSH Platform_Circle_Brush, Platform_Inner_Brush;
+//------------------------------------------------------------------------------------------------------------
+void Create_Pen_Brush(unsigned char r, unsigned char g, unsigned char b, HPEN &pen, HBRUSH &brush)
+{
+   pen = CreatePen(PS_SOLID, 0, RGB(r, g, b) );
+   brush = CreateSolidBrush(RGB(r, g, b) );
+}
 //------------------------------------------------------------------------------------------------------------
 void Init()
 {//настройка игры при старте
 
-   Brick_Blue_Brush = CreateSolidBrush(RGB(62, 71, 202) );
-   Brick_Blue_Pen = CreatePen(PS_SOLID, 0, RGB(62, 71, 202) );
+   Create_Pen_Brush(62, 71, 202, Brick_Blue_Pen, Brick_Blue_Brush);
+   Create_Pen_Brush(235, 28, 35, Brick_Red_Pen, Brick_Red_Brush);
 
-   Brick_Red_Brush = CreateSolidBrush(RGB(235, 28, 35) );
-   Brick_Red_Pen = CreatePen(PS_SOLID, 0, RGB(235, 28, 35) );
+   Create_Pen_Brush(1661, 81, 167, Platform_Circle_Pen, Platform_Circle_Brush);
+   Create_Pen_Brush(32, 174, 73, Platform_Inner_Pen, Platform_Inner_Brush);
+   Highlight_Pen = CreatePen(PS_SOLID, 2, RGB(255, 255, 255) );
 }
 //------------------------------------------------------------------------------------------------------------
 void Draw_Brick(HDC hdc, int x, int y, EBrick_Type brick_type)
@@ -83,9 +95,36 @@ void Draw_Level(HDC hdc)
          Draw_Brick(hdc, Level_X_Offset + Cell_Width * j, Level_Y_Offset + Cell_Height * i, EBrick_Type(Level_01[i][j]));
 }
 //------------------------------------------------------------------------------------------------------------
+void Draw_Platform(HDC hdc, int x, int y)
+{//отрисовка платформы
+   
+   //1.отрисовка шариков платформы
+   SelectObject(hdc, Platform_Circle_Brush);
+   SelectObject(hdc, Platform_Circle_Pen);
+  
+   Ellipse(hdc, x * Global_Scale, y * Global_Scale, (x + Circle_Size) * Global_Scale, (y + Circle_Size) * Global_Scale);
+   Ellipse(hdc, (x + Inner_Width) * Global_Scale, y * Global_Scale, (x + Inner_Width + Circle_Size) * Global_Scale, (y + Circle_Size) * Global_Scale);
+
+   //2.Отрисовка внутренней части
+   SelectObject(hdc, Platform_Inner_Brush);
+   SelectObject(hdc, Platform_Inner_Pen);
+
+   RoundRect(hdc, (x + 4) * Global_Scale, (y + 1) * Global_Scale, (x + 4 + (Inner_Width - 1)) * Global_Scale, (y + 1 + 5) * Global_Scale,
+      5 * Global_Scale, 5 * Global_Scale);
+
+   //3.Отрисовка дуги
+   SelectObject(hdc, Highlight_Pen);
+
+   Arc(hdc, (x + 1) * Global_Scale, (y + 1) * Global_Scale,
+            (x + Circle_Size - 1) * Global_Scale, (y + Circle_Size - 1) * Global_Scale,
+            (x + 2) * Global_Scale, (y + 1) * Global_Scale,
+            x * Global_Scale, (y + 3) * Global_Scale);
+}
+//------------------------------------------------------------------------------------------------------------
 void Draw_Frame(HDC hdc)
 {//отрисовка экрана игры
 
-   Draw_Level(hdc);
+   Draw_Level(hdc);//lenth = 12, height = 14
+   Draw_Platform(hdc, 110, 150);//lxb = 28x7, R=7, inner = 21
 }
 //------------------------------------------------------------------------------------------------------------
