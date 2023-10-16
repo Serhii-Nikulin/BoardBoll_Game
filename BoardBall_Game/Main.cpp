@@ -3,7 +3,6 @@
 
 #include "framework.h"
 #include "Main.h"
-
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -11,13 +10,6 @@ HINSTANCE hInst;
 WCHAR szTitle[MAX_LOADSTRING];                   
 WCHAR szWindowClass[MAX_LOADSTRING]; 
 
-const int Global_Scale = 3;
-const int Level_X_Offset = 8;
-const int Level_Y_Offset = 6;
-const int Brick_Width = 15;
-const int Brick_Height = 7;
-const int Ceil_Width = 16;
-const int Ceil_Height = 8;
 //------------------------------------------------------------------------------------------------------------
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
@@ -80,10 +72,12 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
    return RegisterClassExW(&wcex);
 }
 //------------------------------------------------------------------------------------------------------------
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)//Saves instance handle and creates main window
-{
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
+{//Saves instance handle and creates main window
 
    hInst = hInstance; // Store instance handle in our global variable
+
+   Init();//иницализацие кистей и карандашей кирпичей
 
    RECT window_rect;
    window_rect.left = 0;
@@ -94,7 +88,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)//Saves instance handle and 
    AdjustWindowRect(&window_rect, WS_OVERLAPPEDWINDOW, TRUE);
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      0, 0, window_rect.right - window_rect.left, window_rect.bottom - window_rect.top, nullptr, nullptr, hInstance, nullptr);//создаем окно с учетом коррекции координат его вершин
+      0, 0, window_rect.right - window_rect.left, window_rect.bottom - window_rect.top, 
+      nullptr, nullptr, hInstance, nullptr);//создаем окно с учетом коррекции координат его вершин
    
    if (!hWnd)
    {
@@ -105,38 +100,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)//Saves instance handle and 
    UpdateWindow(hWnd);
   
    return TRUE;
-}
-//------------------------------------------------------------------------------------------------------------
-void Draw_Brick(HDC hdc, int x, int y, bool is_blue)
-{
-   HPEN pen;
-   HBRUSH brush;
-
-   if (is_blue)
-   {
-      brush = CreateSolidBrush(RGB(62, 71, 202) );
-      pen = CreatePen(PS_SOLID, 0, RGB(62, 71, 202) );
-   }
-   else
-   {
-      brush = CreateSolidBrush(RGB(235, 28, 35) );
-      pen = CreatePen(PS_SOLID, 0, RGB(235, 28, 35) );
-   }
-
-   SelectObject(hdc, pen);
-   SelectObject(hdc, brush);
-   Rectangle(hdc, x * Global_Scale, y * Global_Scale, (x + Brick_Width) * Global_Scale, (y + Brick_Height) * Global_Scale);
-
-}
-//------------------------------------------------------------------------------------------------------------
-void Draw_Frame(HDC hdc)
-{//отрисовка экрана игры
-
-   int i, j;
-   
-   for (i = 0; i < 14; i++)
-      for (j = 0; j < 12; j++)
-         Draw_Brick(hdc, Level_X_Offset + Ceil_Width * j, Level_Y_Offset + Ceil_Height * i, true);
 }
 //------------------------------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)//Processes messages for the main window.
@@ -154,9 +117,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)/
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
+
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
+
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
@@ -171,9 +136,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)/
           EndPaint(hWnd, &ps);
         }
         break;
+
     case WM_DESTROY://срабатывает при выходе из программы
         PostQuitMessage(0);
         break;
+
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
