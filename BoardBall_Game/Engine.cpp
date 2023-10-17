@@ -6,6 +6,11 @@ enum EBrick_Type{
    EBT_Blue
 };
 
+enum ELetter_Type{
+   ELT_None,
+   ELT_O
+};
+
 char Level_01[14][12] = {
    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -39,6 +44,8 @@ int Inner_Width = 21;
 
 HPEN Platform_Circle_Pen, Platform_Inner_Pen, Highlight_Pen;
 HBRUSH Platform_Circle_Brush, Platform_Inner_Brush;
+
+HPEN Letter_Pen;
 //------------------------------------------------------------------------------------------------------------
 void Create_Pen_Brush(unsigned char r, unsigned char g, unsigned char b, HPEN &pen, HBRUSH &brush)
 {
@@ -55,6 +62,7 @@ void Init()
    Create_Pen_Brush(1661, 81, 167, Platform_Circle_Pen, Platform_Circle_Brush);
    Create_Pen_Brush(32, 174, 73, Platform_Inner_Pen, Platform_Inner_Brush);
    Highlight_Pen = CreatePen(PS_SOLID, 2, RGB(255, 255, 255) );
+   Letter_Pen = CreatePen(PS_SOLID, Global_Scale, RGB(255, 255, 255) );
 }
 //------------------------------------------------------------------------------------------------------------
 void Draw_Brick(HDC hdc, int x, int y, EBrick_Type brick_type)
@@ -121,10 +129,140 @@ void Draw_Platform(HDC hdc, int x, int y)
             x * Global_Scale, (y + 3) * Global_Scale);
 }
 //------------------------------------------------------------------------------------------------------------
+void Set_Brick_Letter_Colors(bool is_switch_color, HPEN &front_pen, HBRUSH &front_brush, HPEN &back_pen, HBRUSH &back_brush)
+{
+   if (is_switch_color)//если перевернутый синий или неперевенутый красный
+   {
+      front_pen = Brick_Red_Pen;
+      front_brush = Brick_Red_Brush;
+
+      back_pen = Brick_Blue_Pen;
+      back_brush = Brick_Red_Brush;
+   }
+   else//если перевернутый красный или неперевернутый синий
+   {
+      front_pen = Brick_Blue_Pen;
+      front_brush = Brick_Blue_Brush;
+
+      back_pen = Brick_Red_Pen;
+      back_brush = Brick_Red_Brush;
+   }
+}
+//------------------------------------------------------------------------------------------------------------
+void Draw_Brick_Letter(HDC hdc, int x, int y, EBrick_Type brick_type, ELetter_Type letter_type, int rotation_step)
+{//вывод падающей буквы
+   
+   bool switch_color;
+   HPEN front_pen, back_pen;
+   HBRUSH front_brush, back_brush;
+
+   double rotation_angle;
+   double offset;
+   int brick_half_height;
+   double back_part_offset;
+
+   if (brick_type != EBT_Blue && brick_type != EBT_Red)
+      return;
+
+   rotation_step = rotation_step % 16;
+
+   if (rotation_step < 8)
+      rotation_angle = 2.0 * M_PI / 16.0 * rotation_step;
+   else
+      rotation_angle = 2.0 * M_PI / 16.0 * (rotation_step - 8);
+
+
+	if (rotation_step > 4 && rotation_step <= 12)
+	{
+		if (brick_type == EBT_Blue)
+			switch_color = true;
+		else
+			switch_color = false;
+	}
+	else
+	{
+		if (brick_type == EBT_Blue)
+			switch_color = false;
+		else
+			switch_color = true;
+	}
+
+	Set_Brick_Letter_Colors(switch_color, front_pen, front_brush, back_pen, back_brush);
+
+   if (rotation_step == 4 || rotation_step == 12)//вывод киприча в горизонтальном положении
+   {
+      //выводим фон
+      SelectObject(hdc, back_pen);
+      SelectObject(hdc, back_brush);
+      Rectangle(hdc, x, y - Global_Scale, x + Brick_Width * Global_Scale, y - 1);
+
+      //выводим передний план
+      SelectObject(hdc, front_pen);
+      SelectObject(hdc, front_brush);
+      Rectangle(hdc, x, y, x + Brick_Width * Global_Scale, y + Global_Scale - 1);
+   }
+   else
+   {
+      XFORM xForm, prev_xForm;
+      SetGraphicsMode(hdc, GM_ADVANCED);
+      //сохраняем текущее пространство преобразования в матрицу
+      GetWorldTransform(hdc, &prev_xForm);
+
+      brick_half_height = Brick_Height * Global_Scale / 2.0;
+
+      xForm.eM11 = 1.0; xForm.eM12 = 0.0;
+      xForm.eM21 = 0.0; xForm.eM22 = cos(rotation_angle);
+
+      //смещение начала новой системы координат относительно старой
+      xForm.eDx = x;    xForm.eDy = y;
+
+      //устанавливаем новое пространство преобразования
+      SetWorldTransform(hdc, &xForm);
+
+      offset = 3.0 * (1.0 - fabs(xForm.eM22) ) * Global_Scale;
+
+      //0.0, 0.68, 2.63, 5.55, 8.99, 5.55, 2.63, 0.68, 0.0, 0.68, 2.63, 5.55, 8.99, 5.55, 2.63, 0.68
+
+      back_part_offset = round(offset);
+
+      //выводим фон
+      SelectObject(hdc, back_pen);
+      SelectObject(hdc, back_brush);
+
+      Rectangle(hdc, 0, -brick_half_height - back_part_offset, Brick_Width * Global_Scale, brick_half_height - back_part_offset);
+
+      //выводим передний план
+      SelectObject(hdc, front_pen);
+      SelectObject(hdc, front_brush);
+
+      Rectangle(hdc, 0, -brick_half_height, Brick_Width * Global_Scale, brick_half_height);
+
+      //вывод буквы на кирпиче
+      if (rotation_step > 4 && rotation_step <= 12)
+      {
+         if (letter_type == ELT_O)
+         {
+            SelectObject(hdc, Letter_Pen);
+            Ellipse(hdc, 0 + 5 * Global_Scale, -5 * Global_Scale / 2, 0 + 10 * Global_Scale, 5 * Global_Scale / 2);
+         }
+      }
+      //устанавливаем исходное пространство преобразования
+      SetWorldTransform(hdc, &prev_xForm);
+   }
+   
+}
+//------------------------------------------------------------------------------------------------------------
 void Draw_Frame(HDC hdc)
 {//отрисовка экрана игры
 
-   Draw_Level(hdc);//lenth = 12, height = 14
-   Draw_Platform(hdc, 110, 150);//lxb = 28x7, R=7, inner = 21
+   //Draw_Level(hdc);//length = 12, height = 14
+   //Draw_Platform(hdc, 110, 150);//lxb = 28x7, R=7, inner = 21
+
+   for(int i = 0; i < 16; i++)
+   {
+      Draw_Brick_Letter(hdc, 20 + i * Cell_Width * Global_Scale, 100, EBT_Blue, ELT_O, i);
+      Draw_Brick_Letter(hdc, 20 + i * Cell_Width * Global_Scale, 150, EBT_Red,  ELT_O, i);
+   }
+
 }
 //------------------------------------------------------------------------------------------------------------
