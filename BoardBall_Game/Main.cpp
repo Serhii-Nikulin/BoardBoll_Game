@@ -94,7 +94,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
       return FALSE;
    }
 
-   Init_Engine(hWnd);//иницализацие кистей и карандашей кирпичей
+   Init_Engine(hWnd);
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
@@ -107,50 +107,56 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)/
    //оконная процедура для обработки сообщений полученных от ОС
   
     switch (message)
+	 {
+	 case WM_COMMAND://описывает пункт выбора меню
+	 {
+		 int wmId = LOWORD(wParam);
+
+		 switch (wmId)
+		 {
+		 case IDM_ABOUT:
+			 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+			 break;
+
+		 case IDM_EXIT:
+			 DestroyWindow(hWnd);
+			 break;
+
+		 default:
+			 return DefWindowProc(hWnd, message, wParam, lParam);
+		 }
+	 }
+	 break;
+	 case WM_PAINT://Запрос программе на отрисовку
+	 {
+		 PAINTSTRUCT ps;
+		 HDC hdc = BeginPaint(hWnd, &ps);
+
+		 Draw_Frame(hdc, ps.rcPaint);
+		 EndPaint(hWnd, &ps);
+	 }
+	 break;
+
+	 case WM_KEYDOWN:
+	 {
+		 switch (wParam)
+		 {
+		 case VK_LEFT:
+			 return On_Key_Down(EKT_Left);
+
+		 case VK_RIGHT:
+			 return On_Key_Down(EKT_Right);
+
+		 case VK_SPACE:
+			 return On_Key_Down(EKT_Space);
+		 }
+	 }
+    
+    case WM_TIMER:
     {
-    case WM_COMMAND://описывает пункт выбора меню
-        {
-            int wmId = LOWORD(wParam);
-        
-            switch (wmId)
-            {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
-        }
-        break;
-    case WM_PAINT://Запрос программе на отрисовку
-        {
-          PAINTSTRUCT ps;
-          HDC hdc = BeginPaint(hWnd, &ps);
-          
-          Draw_Frame(hdc, ps.rcPaint);
-          EndPaint(hWnd, &ps);
-        }
-        break;
-
-    case WM_KEYDOWN:
-         {
-            switch (wParam)
-            {
-            case VK_LEFT:
-               return On_Key_Down(EKT_Left);
-
-            case VK_RIGHT:
-               return On_Key_Down(EKT_Right);
-              
-            case VK_SPACE:
-               return On_Key_Down(EKT_Space);
-            }
-         }
+       if (wParam == Timer_ID)
+         return On_Timer();
+    }
 
     case WM_DESTROY://срабатывает при выходе из программы
         PostQuitMessage(0);
