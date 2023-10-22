@@ -1,4 +1,4 @@
-#include "Border.h"
+﻿#include "Border.h"
 
 //AsBprder
 //------------------------------------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ void AsBorder::Draw(HDC hdc, HPEN bg_pen, HBRUSH bg_brush)
       Draw_Element(hdc, 2, 1 + 4 * i, false, bg_pen, bg_brush);
 
    for (int i = 0; i < 50; i++)
-      Draw_Element(hdc, 201/*AsEngine::Max_X_Pos*/, 1 + 4 * i, false, bg_pen, bg_brush);
+      Draw_Element(hdc, 201/*AsConfig::Max_X_Pos*/, 1 + 4 * i, false, bg_pen, bg_brush);
 
    for (int i = 0; i < 50; i++)
       Draw_Element(hdc, 3 + i * 4, 0, true, bg_pen, bg_brush);

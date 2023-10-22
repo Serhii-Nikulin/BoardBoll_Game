@@ -25,6 +25,12 @@
     <Filter Include="Level">
       <UniqueIdentifier>{34e0d687-ecdb-4b60-a062-693269ea506a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Border\Ball">
+      <UniqueIdentifier>{64f304a7-855f-4692-ae64-32690eadb16a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Border\Ball\Platform">
+      <UniqueIdentifier>{74cfd842-320b-4a73-8397-24c544e5a3d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -51,6 +57,12 @@
     <ClInclude Include="Level.h">
       <Filter>Level</Filter>
     </ClInclude>
+    <ClInclude Include="Ball.h">
+      <Filter>Border\Ball</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Border\Ball\Platform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -67,6 +79,12 @@
     </ClCompile>
     <ClCompile Include="Level.cpp">
       <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Ball.cpp">
+      <Filter>Border\Ball</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Border\Ball\Platform</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
