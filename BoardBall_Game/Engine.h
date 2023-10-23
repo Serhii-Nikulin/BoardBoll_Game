@@ -25,16 +25,15 @@ public:
 	int On_Key_Down(EKey_Type key_type);
 	int On_Timer();
 
-	//Config
-	HWND Hwnd;
-	HPEN BG_Pen;
-	HBRUSH BG_Brush;
-
 private:
 	AsPlatform Platform;
 	ABall Ball;
 	ALevel Level;
 	AsBorder Border;
-	
+
+	//Config
+	HWND Hwnd;
+	HPEN BG_Pen;
+	HBRUSH BG_Brush;
 };
 //------------------------------------------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 
 //Level
 //------------------------------------------------------------------------------------------------------------
-char Level_01[AsConfig::Level_Height][AsConfig::Level_Width] = {
+char ALevel::Level_01[AsConfig::Level_Height][AsConfig::Level_Width] = {
    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -87,7 +87,7 @@ void ALevel::Draw_Brick(HDC hdc, int x, int y, EBrick_Type brick_type)
       2 * AsConfig::Global_Scale, 2 * AsConfig::Global_Scale);
 }
 //------------------------------------------------------------------------------------------------------------
-void ALevel::Draw(HDC hdc, RECT &paint_area)
+void ALevel::Draw(HWND hwnd, HDC hdc, RECT &paint_area)
 {//отрисовка кирпичей уровня
 
    int i, j;
@@ -99,6 +99,8 @@ void ALevel::Draw(HDC hdc, RECT &paint_area)
    for (i = 0; i < AsConfig::Level_Height; i++)
       for (j = 0; j < AsConfig::Level_Width; j++)
          Draw_Brick(hdc, AsConfig::Level_X_Offset + AsConfig::Cell_Width * j, AsConfig::Level_Y_Offset + AsConfig::Cell_Height * i, EBrick_Type(Level_01[i][j]));
+
+   Active_Brick.Draw(hdc, paint_area);
 }
 //------------------------------------------------------------------------------------------------------------
 void ALevel::Set_Brick_Letter_Colors(bool is_switch_color, HPEN &front_pen, HBRUSH &front_brush, HPEN &back_pen, HBRUSH &back_brush)

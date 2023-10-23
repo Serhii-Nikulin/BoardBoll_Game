@@ -107,12 +107,15 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)//Processes messages for the main window.
 {
    //оконная процедура для обработки сообщений полученных от ОС
-  
+    int wmId;
+    PAINTSTRUCT ps;
+    HDC hdc;
+
     switch (message)
 	 {
 	 case WM_COMMAND://описывает пункт выбора меню
 	 {
-		 int wmId = LOWORD(wParam);
+		 wmId = LOWORD(wParam);
 
 		 switch (wmId)
 		 {
@@ -131,9 +134,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)/
 	 break;
 	 case WM_PAINT://Запрос программе на отрисовку
 	 {
-		 PAINTSTRUCT ps;
-		 HDC hdc = BeginPaint(hWnd, &ps);
-
+		 hdc = BeginPaint(hWnd, &ps);
 		 Engine.Draw_Frame(hdc, ps.rcPaint);
 		 EndPaint(hWnd, &ps);
 	 }

@@ -6,7 +6,7 @@
 //------------------------------------------------------------------------------------------------------------
 ABall::ABall()
    :Ball_Pen(0), Ball_Brush(0), Ball_X_Pos(50 + (28 - AsConfig::Ball_Size) / 2),
-   Ball_Y_Pos(AsConfig::Y_Pos + 1 - AsConfig::Ball_Size), Ball_Direction(M_PI - M_PI_4), Ball_Rect{}, Prev_Ball_Rect{}, Ball_Speed(3.0)
+   Ball_Y_Pos(AsConfig::Platform_Y_Pos + 1 - AsConfig::Ball_Size), Ball_Direction(M_PI - M_PI_4), Ball_Rect{}, Prev_Ball_Rect{}, Ball_Speed(3.0)
 {
    /*Ball_X_Pos = X_Pos + (Width - Ball_Size) / 2),
    Ball_Y_Pos(Y_Pos + 1 - Ball_Size);*/
@@ -41,7 +41,7 @@ void ABall::Move(HWND hwnd, int platform_x_pos, int platform_width, ALevel *leve
    int next_x_pos, next_y_pos;
    int max_x_pos = AsConfig::Max_X_Pos - AsConfig::Ball_Size;
 	int max_y_pos = AsConfig::Max_X_Pos - AsConfig::Ball_Size;
-   int platform_y_pos = AsConfig::Y_Pos - AsConfig::Ball_Size;
+   int platform_y_pos = AsConfig::Platform_Y_Pos - AsConfig::Ball_Size;
 
    Prev_Ball_Rect = Ball_Rect;
 

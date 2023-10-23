@@ -21,7 +21,7 @@ void AsEngine::Init_Engine(HWND hwnd)
 
    Platform.Redraw_Platform(hwnd);
 
-   SetTimer(Hwnd, Timer_ID, 50, NULL);
+   SetTimer(Hwnd, Timer_ID, 1000 / AsConfig::FPS, NULL);
 }
 //------------------------------------------------------------------------------------------------------------
 void AsEngine::Draw_Frame(HDC hdc, RECT &paint_area)
@@ -30,7 +30,7 @@ void AsEngine::Draw_Frame(HDC hdc, RECT &paint_area)
    RECT intersection_rect;//прямоугольник для нахождения пересечения областей
 
    Ball.Draw(hdc, paint_area, BG_Pen, BG_Brush);
-   Level.Draw(hdc, paint_area);//length = 12, height = 14
+   Level.Draw(Hwnd, hdc, paint_area);//length = 12, height = 14
    Platform.Draw(hdc, paint_area, BG_Pen, BG_Brush);//lxb = 28x7, R=7, inner = 21
    Border.Draw(hdc, BG_Pen, BG_Brush);
 
@@ -75,6 +75,7 @@ int AsEngine::On_Timer()
 {//отработка событий таймера
 
    Ball.Move(Hwnd, Platform.X_Pos, Platform.Width, &Level);
+   Level.Active_Brick.Act(Hwnd);
    return 0;
 }
 //------------------------------------------------------------------------------------------------------------

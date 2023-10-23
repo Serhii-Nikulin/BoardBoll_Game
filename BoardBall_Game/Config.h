@@ -13,12 +13,13 @@ public:
 	
 	//Config
 	static const int Global_Scale = 3;
+	static const int FPS = 20;
 
 	//Brick
-	static const int Cell_Width = 16;
-	static const int Cell_Height = 8;
 	static const int Brick_Width = 15;
 	static const int Brick_Height = 7;
+	static const int Cell_Width = 16;
+	static const int Cell_Height = 8;
 
 	//Level
 	static const int Level_X_Offset = 8;
@@ -29,7 +30,7 @@ public:
 	static const int Max_Y_Pos = 199;
 
 	//Platform
-	static const int Y_Pos = 185;
+	static const int Platform_Y_Pos = 185;
 
 	//Border
 	static const int Border_X_Offset = 6;
