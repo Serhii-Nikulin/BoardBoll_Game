@@ -3,7 +3,7 @@
 //AsEngine
 //------------------------------------------------------------------------------------------------------------
 AsEngine::AsEngine():
-   Hwnd(0), BG_Pen(0), BG_Brush()
+   Hwnd(0)
 {
 }
 //------------------------------------------------------------------------------------------------------------
@@ -12,8 +12,8 @@ void AsEngine::Init_Engine(HWND hwnd)
 
    Hwnd = hwnd;
 
-   AsConfig::Create_Pen_Brush(0, 0, 0, BG_Pen, BG_Brush);
-  
+   AActive_Brick::Setup_Colors();
+
    Ball.Init();
    Level.Init();
    Platform.Init();
@@ -27,12 +27,10 @@ void AsEngine::Init_Engine(HWND hwnd)
 void AsEngine::Draw_Frame(HDC hdc, RECT &paint_area)
 {//отрисовка экрана игры
 
-   RECT intersection_rect;//прямоугольник для нахождения пересечения областей
-
-   Ball.Draw(hdc, paint_area, BG_Pen, BG_Brush);
+   Ball.Draw(hdc, paint_area);
    Level.Draw(Hwnd, hdc, paint_area);//length = 12, height = 14
-   Platform.Draw(hdc, paint_area, BG_Pen, BG_Brush);//lxb = 28x7, R=7, inner = 21
-   Border.Draw(hdc, BG_Pen, BG_Brush);
+   Platform.Draw(hdc, paint_area);//lxb = 28x7, R=7, inner = 21
+   Border.Draw(hdc);
 
  /*  for (int i = 0; i < 16; i++)
    {

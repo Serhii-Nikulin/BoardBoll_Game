@@ -9,7 +9,7 @@ public:
 	AsPlatform();
 	void Init();
 	void Redraw_Platform(HWND hwnd);
-	void Draw(HDC hdc, RECT &paint_area, HPEN bg_pen, HBRUSH bg_brush);
+	void Draw(HDC hdc, RECT &paint_area);
 
 	int Width;
 	int X_Step;

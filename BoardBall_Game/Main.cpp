@@ -29,6 +29,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_BOARDBALLGAME, szWindowClass, MAX_LOADSTRING);
 
+    AsConfig::Setup_Colors();
+
     MyRegisterClass(hInstance);
 
     if (!InitInstance (hInstance, nCmdShow))
@@ -66,7 +68,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
    wcex.hInstance      = hInstance;
    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_BOARDBALLGAME));
    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-   wcex.hbrBackground  = CreateSolidBrush(RGB(0, 0, 0) );
+   wcex.hbrBackground  = AsConfig::BG_Brush;
    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_BOARDBALLGAME);
    wcex.lpszClassName  = szWindowClass;
    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));

@@ -77,9 +77,6 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Border.cpp">
-      <Filter>Border</Filter>
-    </ClCompile>
     <ClCompile Include="Config.cpp">
       <Filter>Config</Filter>
     </ClCompile>
@@ -94,6 +91,9 @@
     </ClCompile>
     <ClCompile Include="Active_Brick.cpp">
       <Filter>Active_Brick</Filter>
+    </ClCompile>
+    <ClCompile Include="Border.cpp">
+      <Filter>Ball</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

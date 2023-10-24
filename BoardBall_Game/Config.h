@@ -5,12 +5,35 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+//AColor
+//------------------------------------------------------------------------------------------------------------
+class AColor
+{
+public:
+	AColor(unsigned char r, unsigned char g, unsigned char b);
+
+	unsigned char R, G, B;
+};
+//------------------------------------------------------------------------------------------------------------
+
+
+
+//AsConfig
 //------------------------------------------------------------------------------------------------------------
 class AsConfig
 {
 public:
 	static void Create_Pen_Brush(unsigned char r, unsigned char g, unsigned char b, HPEN &pen, HBRUSH &brush);
-	
+	static void Create_Pen_Brush(const AColor &color, HPEN &pen, HBRUSH &brush);
+	static void Setup_Colors();
+
+	static const AColor Blue_Brick_Color;
+	static const AColor Red_Brick_Color;
+	static const AColor BG_Color;
+
+	static HPEN BG_Pen;
+	static HBRUSH BG_Brush;
+
 	//Config
 	static const int Global_Scale = 3;
 	static const int FPS = 20;
@@ -38,6 +61,5 @@ public:
 
 	//Ball
 	static const int Ball_Size = 4;
-
 };
 //------------------------------------------------------------------------------------------------------------
