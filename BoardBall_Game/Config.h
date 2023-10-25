@@ -26,7 +26,9 @@ public:
 	static void Create_Pen_Brush(unsigned char r, unsigned char g, unsigned char b, HPEN &pen, HBRUSH &brush);
 	static void Create_Pen_Brush(const AColor &color, HPEN &pen, HBRUSH &brush);
 	static void Setup_Colors();
+	static int Rand(int range);
 
+	static int Current_Timer_Tick;
 	static const AColor Blue_Brick_Color;
 	static const AColor Red_Brick_Color;
 	static const AColor BG_Color;

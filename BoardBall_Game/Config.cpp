@@ -13,6 +13,7 @@ AColor::AColor(unsigned char r, unsigned char g, unsigned char b)
 
 //AsConfig
 //------------------------------------------------------------------------------------------------------------
+int AsConfig::Current_Timer_Tick = 0;
 const AColor AsConfig::Blue_Brick_Color(62, 71, 202);
 const AColor AsConfig::Red_Brick_Color(235, 28, 35);
 const AColor AsConfig::BG_Color(0, 0, 0);
@@ -35,3 +36,9 @@ void AsConfig::Setup_Colors()
 {
    AsConfig::Create_Pen_Brush(AsConfig::BG_Color, AsConfig::BG_Pen, AsConfig::BG_Brush);
 }
+//------------------------------------------------------------------------------------------------------------
+int AsConfig::Rand(int range)
+{
+   return rand() * range / RAND_MAX;
+}
+//------------------------------------------------------------------------------------------------------------

@@ -42,6 +42,9 @@ void AsEngine::Draw_Frame(HDC hdc, RECT &paint_area)
 int AsEngine::On_Key_Down(EKey_Type key_type)
 {//Обработка нажатия клавиш
 
+   if (Platform.Platform_State == EPS_Meltdown)
+      return 0;
+
    switch (key_type)
    {
    case EKT_Left:
@@ -72,8 +75,12 @@ int AsEngine::On_Key_Down(EKey_Type key_type)
 int AsEngine::On_Timer()
 {//отработка событий таймера
 
+   ++AsConfig::Current_Timer_Tick;
+
    Ball.Move(Hwnd, Platform.X_Pos, Platform.Width, &Level);
    Level.Active_Brick.Act(Hwnd);
+   Platform.Act(Hwnd);
+
    return 0;
 }
 //------------------------------------------------------------------------------------------------------------
