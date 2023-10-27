@@ -28,7 +28,6 @@ public:
 	static void Setup_Colors();
 	static int Rand(int range);
 
-	static int Current_Timer_Tick;
 	static const AColor Blue_Brick_Color;
 	static const AColor Red_Brick_Color;
 	static const AColor BG_Color;
@@ -36,7 +35,10 @@ public:
 	static HPEN BG_Pen;
 	static HBRUSH BG_Brush;
 
+	static int Current_Timer_Tick;
+
 	//Config
+	static HWND Hwnd;
 	static const int Global_Scale = 3;
 	static const int FPS = 20;
 

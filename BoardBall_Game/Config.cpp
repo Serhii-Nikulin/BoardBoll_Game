@@ -19,6 +19,7 @@ const AColor AsConfig::Red_Brick_Color(235, 28, 35);
 const AColor AsConfig::BG_Color(0, 0, 0);
 HPEN AsConfig::BG_Pen = 0;
 HBRUSH AsConfig::BG_Brush = 0;
+HWND AsConfig::Hwnd;
 //------------------------------------------------------------------------------------------------------------
 void AsConfig::Create_Pen_Brush(unsigned char r, unsigned char g, unsigned char b, HPEN &pen, HBRUSH &brush)
 {

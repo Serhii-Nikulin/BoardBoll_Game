@@ -93,7 +93,7 @@
       <Filter>Active_Brick</Filter>
     </ClCompile>
     <ClCompile Include="Border.cpp">
-      <Filter>Ball</Filter>
+      <Filter>Border</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
