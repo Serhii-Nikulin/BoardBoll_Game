@@ -4,7 +4,8 @@
 
 enum EPlatform_State
 {
-	EPS_None, 
+	EPS_Missing,
+	EPS_Ready,
 	EPS_Normal,
 	EPS_Meltdown,
 	EPS_Roll_In,
@@ -16,8 +17,9 @@ class AsPlatform
 public:
 	AsPlatform();
 
-	void Init();
+	void Init(int x_pos);
 	void Act(HWND hwnd);
+	EPlatform_State Get_State();
 	void Set_State(EPlatform_State platform_state);
 	void Redraw_Platform();
 	void Draw(HDC hdc, RECT &paint_area);

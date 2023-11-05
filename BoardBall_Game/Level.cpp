@@ -20,7 +20,7 @@ char ALevel::Level_01[AsConfig::Level_Height][AsConfig::Level_Width] = {
 };
 //------------------------------------------------------------------------------------------------------------
 ALevel::ALevel()
-   :Level_Rect{}, Letter_Pen{}, Brick_Blue_Pen(0), Brick_Red_Pen(0),Brick_Blue_Brush(0), Brick_Red_Brush(0), Active_Brick(EBT_Blue)
+   :Has_Floor(false), Level_Rect{}, Letter_Pen{}, Brick_Blue_Pen(0), Brick_Red_Pen(0),Brick_Blue_Brush(0), Brick_Red_Brush(0), Active_Brick(EBT_Blue)
 {
 }
 //------------------------------------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ void ALevel::Init()
    Level_Rect.bottom = Level_Rect.top + AsConfig::Level_Height * AsConfig::Cell_Height * AsConfig::Global_Scale;
 }
 //------------------------------------------------------------------------------------------------------------
-void ALevel::Check_Level_Brick_Hit(int &next_y_pos, double &ball_direction)
+void ALevel::Check_Level_Brick_Hit(double &next_y_pos, double &ball_direction)
 {//проверка поподания по кирпичу
 
    int i, j;

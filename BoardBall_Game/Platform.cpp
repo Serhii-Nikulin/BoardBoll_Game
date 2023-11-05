@@ -8,8 +8,9 @@ AsPlatform::AsPlatform()
 {
 }
 //------------------------------------------------------------------------------------------------------------
-void AsPlatform::Init()
+void AsPlatform::Init(int x_pos)
 {
+   X_Pos = 100;
    Highlight_Pen = CreatePen(PS_SOLID, 2, RGB(255, 255, 255) );
    AsConfig::Create_Pen_Brush(166, 81, 167, Platform_Circle_Pen, Platform_Circle_Brush);
    AsConfig::Create_Pen_Brush(32, 174, 73, Platform_Inner_Pen, Platform_Inner_Brush);
@@ -19,13 +20,19 @@ void AsPlatform::Act(HWND hwnd)
 {
    switch (Platform_State)
    {
+   case EPS_Normal:
+   case EPS_Meltdown:
    case EPS_Roll_In:
    case EPS_Expand_Roll_In:
-   case EPS_Normal:
       Redraw_Platform();
       break;
    }
    
+}
+//------------------------------------------------------------------------------------------------------------
+EPlatform_State AsPlatform::Get_State()
+{
+   return Platform_State;
 }
 //------------------------------------------------------------------------------------------------------------
 void AsPlatform::Set_State(EPlatform_State new_state)
@@ -42,7 +49,7 @@ void AsPlatform::Set_State(EPlatform_State new_state)
       len = sizeof(Meltdown_Platform_Y_Pos) / sizeof(Meltdown_Platform_Y_Pos[0]);
 
       for (i = 0; i < len; i++)
-         Meltdown_Platform_Y_Pos[i] += Platform_Rect.bottom;
+         Meltdown_Platform_Y_Pos[i] = Platform_Rect.bottom;
 
       break;
 
@@ -139,13 +146,22 @@ void AsPlatform::Draw_Meltdown_State(HDC hdc, RECT &paint_area)
    int area_width, area_height;
    int y_offset = 0;
    COLORREF pixel, bg_pixel;
-   
+   int moved_columns_count = 0;
+   int max_platform_y;
+
    area_width = Width * AsConfig::Global_Scale;
    area_height = Height * AsConfig::Global_Scale;
    bg_pixel = RGB(AsConfig::BG_Color.R, AsConfig::BG_Color.G, AsConfig::BG_Color.B);
 
+   max_platform_y = AsConfig::Max_Y_Pos * AsConfig::Global_Scale + area_height + AsConfig::Global_Scale;
+
    for (i = 0; i < area_width; i++)
    {
+      if (Meltdown_Platform_Y_Pos[i] > max_platform_y)
+         continue;
+
+      ++moved_columns_count;
+
       x = Platform_Rect.left + i;
       y_offset = AsConfig::Rand(Meltdown_Speed) + 1;
 
@@ -164,6 +180,9 @@ void AsPlatform::Draw_Meltdown_State(HDC hdc, RECT &paint_area)
 
       Meltdown_Platform_Y_Pos[i] += y_offset;
    }
+
+   if (moved_columns_count == 0)
+      Set_State(EPS_Missing);//платформа покинула пределы окна
 }
 //------------------------------------------------------------------------------------------------------------
 void AsPlatform::Draw_Roll_In_State(HDC hdc, RECT &paint_area)
@@ -227,9 +246,10 @@ void AsPlatform::Draw_Expanding_Roll_In_State(HDC hdc, RECT &paint_area)
 	Inner_Width += 2;
    X_Pos -= 1;
 
-   if (Inner_Width == Normal_Platform_Inner_Width)
+   if (Inner_Width >= Normal_Platform_Inner_Width)
    {
-		Platform_State = EPS_Normal;
+      Inner_Width = Normal_Platform_Inner_Width;
+		Platform_State = EPS_Ready;
       Redraw_Platform();
    }   
 }
