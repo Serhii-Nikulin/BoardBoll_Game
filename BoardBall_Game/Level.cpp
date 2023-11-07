@@ -20,8 +20,33 @@ char ALevel::Level_01[AsConfig::Level_Height][AsConfig::Level_Width] = {
 };
 //------------------------------------------------------------------------------------------------------------
 ALevel::ALevel()
-   :Has_Floor(false), Level_Rect{}, Letter_Pen{}, Brick_Blue_Pen(0), Brick_Red_Pen(0),Brick_Blue_Brush(0), Brick_Red_Brush(0), Active_Brick(EBT_Blue)
+   :Level_Rect{}, Letter_Pen{}, Brick_Blue_Pen(0), Brick_Red_Pen(0),Brick_Blue_Brush(0), Brick_Red_Brush(0), Active_Brick(EBT_Blue)
 {
+}
+//------------------------------------------------------------------------------------------------------------
+bool ALevel::Check_Hit(double next_x_pos, double next_y_pos, ABall* ball)
+{//проверка поподания по кирпичу
+
+   int i, j;
+   int brick_y_pos = AsConfig::Level_Y_Offset + (AsConfig::Level_Height - 1) * AsConfig::Cell_Height + AsConfig::Brick_Height;
+
+   for (i = AsConfig::Level_Height - 1; i >= 0; i--)
+   {
+      for (j = 0; j < AsConfig::Level_Width; j++)
+      {
+         if (Level_01[i][j] == 0)
+            continue;
+
+         if(next_y_pos - ball->Radius <= brick_y_pos)
+         {
+            ball->Ball_Direction = -ball->Ball_Direction;
+            return true;
+         }
+      }
+      brick_y_pos -= AsConfig::Cell_Height;
+   }
+
+   return false;
 }
 //------------------------------------------------------------------------------------------------------------
 void ALevel::Init()
@@ -35,29 +60,6 @@ void ALevel::Init()
    Level_Rect.top = AsConfig::Level_Y_Offset * AsConfig::Global_Scale;
    Level_Rect.right = Level_Rect.left + AsConfig::Level_Width * AsConfig::Cell_Width * AsConfig::Global_Scale;
    Level_Rect.bottom = Level_Rect.top + AsConfig::Level_Height * AsConfig::Cell_Height * AsConfig::Global_Scale;
-}
-//------------------------------------------------------------------------------------------------------------
-void ALevel::Check_Level_Brick_Hit(double &next_y_pos, double &ball_direction)
-{//проверка поподания по кирпичу
-
-   int i, j;
-   int brick_y_pos = AsConfig::Level_Y_Offset + (AsConfig::Level_Height - 1) * AsConfig::Cell_Height + AsConfig::Brick_Height;
-
-   for (i = AsConfig::Level_Height - 1; i >= 0; i--)
-   {
-      for (j = 0; j < AsConfig::Level_Width; j++)
-      {
-         if (Level_01[i][j] == 0)
-            continue;
-
-         if(next_y_pos < brick_y_pos)
-         {
-            next_y_pos = brick_y_pos + (brick_y_pos - next_y_pos);
-            ball_direction = -ball_direction;
-         }
-      }
-      brick_y_pos -= AsConfig::Cell_Height;
-   }
 }
 //------------------------------------------------------------------------------------------------------------
 void ALevel::Draw_Brick(HDC hdc, int x, int y, EBrick_Type brick_type)
@@ -88,7 +90,7 @@ void ALevel::Draw_Brick(HDC hdc, int x, int y, EBrick_Type brick_type)
       2 * AsConfig::Global_Scale, 2 * AsConfig::Global_Scale);
 }
 //------------------------------------------------------------------------------------------------------------
-void ALevel::Draw(HWND hwnd, HDC hdc, RECT &paint_area)
+void ALevel::Draw(HDC hdc, RECT &paint_area)
 {//отрисовка кирпичей уровня
 
    int i, j;

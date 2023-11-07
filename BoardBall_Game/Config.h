@@ -39,6 +39,7 @@ public:
 
 	//Config
 	static HWND Hwnd;
+	static const bool Level_Has_Floor = false;
 	static const int Global_Scale = 3;
 	static const int FPS = 20;
 

@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Config.h"
+#include "Ball.h";
 
 enum EPlatform_State
 {
@@ -12,13 +12,14 @@ enum EPlatform_State
 	EPS_Expand_Roll_In
 };
 //------------------------------------------------------------------------------------------------------------
-class AsPlatform
+class AsPlatform: public Hit_Checker
 {
 public:
 	AsPlatform();
 
+	virtual bool Check_Hit(double next_x_pos, double next_y_pos, ABall* ball);
 	void Init(int x_pos);
-	void Act(HWND hwnd);
+	void Act();
 	EPlatform_State Get_State();
 	void Set_State(EPlatform_State platform_state);
 	void Redraw_Platform();

@@ -32,7 +32,7 @@ void AsEngine::Draw_Frame(HDC hdc, RECT &paint_area)
 {//отрисовка экрана игры
 
    Ball.Draw(hdc, paint_area);
-   Level.Draw(AsConfig::Hwnd, hdc, paint_area);//length = 12, height = 14
+   Level.Draw(hdc, paint_area);//length = 12, height = 14
    Platform.Draw(hdc, paint_area);//lxb = 28x7, R=7, inner = 21
    Border.Draw(hdc);
 
@@ -92,7 +92,7 @@ int AsEngine::On_Timer()
    switch (Game_State)
    {
    case EGS_Play_Level:
-      Ball.Move(Platform.X_Pos, Platform.Width, &Level);
+      Ball.Move(&Level, &Border, &Platform);
 
       if (Ball.Get_State() == EBS_Lost)
       {
@@ -125,7 +125,7 @@ int AsEngine::On_Timer()
 
    }
    //Level.Active_Brick.Act(AsConfig::Hwnd);
-   Platform.Act(AsConfig::Hwnd);
+   Platform.Act();
 
    return 0;
 }
