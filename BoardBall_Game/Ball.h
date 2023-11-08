@@ -23,15 +23,17 @@ public:
 	ABall();
 	void Init();
 	void Draw(HDC hdc,  RECT &paint_area);
-	void Move(Hit_Checker* level_hit_checker, Hit_Checker* border_hit_checker, Hit_Checker* platform_hit_checker);
+	void Move();
 	void Redraw_Ball();
 	EBall_State Get_State();
 	void Set_State(EBall_State new_state, double x_pos);
-
-	double Ball_Direction;
+	double Get_Direction();
+	void Set_Direction(double new_direction);
+	void Reflect(bool from_horizontal);
+	static void Add_Hit_Checker(Hit_Checker* hit_checker);
 
 	static const double Radius;
-
+	
 private:
 	RECT Ball_Rect, Prev_Ball_Rect;
 	HPEN Ball_Pen;
@@ -43,7 +45,11 @@ private:
 	double Center_X_Pos;
 	double Center_Y_Pos;
 	double Rest_Distance;
+	double Ball_Direction;
 
-	static const int Start_Ball_Y_Pos = AsConfig::Platform_Y_Pos + 1 - AsConfig::Ball_Size;
+	static int Hit_Checkers_Count;
+	static const int Start_Ball_Y_Pos = AsConfig::Platform_Y_Pos + 1 - 4;
+
+	static Hit_Checker* Hit_Checkers[3];
 };
 //------------------------------------------------------------------------------------------------------------

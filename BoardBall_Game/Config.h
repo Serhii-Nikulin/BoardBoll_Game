@@ -63,8 +63,5 @@ public:
 	//Border
 	static const int Border_X_Offset = 6;
 	static const int Border_Y_Offset = 4;
-
-	//Ball
-	static const int Ball_Size = 4;
 };
 //------------------------------------------------------------------------------------------------------------

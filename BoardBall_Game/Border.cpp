@@ -32,19 +32,19 @@ bool AsBorder::Check_Hit(double next_x_pos, double next_y_pos, ABall* ball)
    if (AsConfig::Border_X_Offset > next_x_pos - ball->Radius)
    {
       got_hit = true;
-      ball->Ball_Direction = M_PI - ball->Ball_Direction;
+      ball->Reflect(false);
    }
 
    if (AsConfig::Border_Y_Offset > next_y_pos - ball->Radius)
    {
       got_hit = true;
-      ball->Ball_Direction = -ball->Ball_Direction;
+      ball->Reflect(true);
    }
 
    if (next_x_pos + ball->Radius > AsConfig::Max_X_Pos)
    {
       got_hit = true;
-      ball->Ball_Direction = M_PI - ball->Ball_Direction;
+      ball->Reflect(false);
    }
 
    if (next_y_pos + ball->Radius > AsConfig::Max_Y_Pos)
@@ -52,7 +52,7 @@ bool AsBorder::Check_Hit(double next_x_pos, double next_y_pos, ABall* ball)
       if (AsConfig::Level_Has_Floor)
       {
          got_hit = true;
-         ball->Ball_Direction = -ball->Ball_Direction;
+         ball->Reflect(true);
       }
       else
       {

@@ -16,11 +16,15 @@ void AsEngine::Init_Engine(HWND hwnd)
 
    platform_x_pos = AsConfig::Border_X_Offset + (AsConfig::Max_X_Pos - AsConfig::Border_X_Offset) / 2;
    Platform.Init(platform_x_pos);
-   ball_x_pos = Platform.X_Pos + Platform.Width / 2 - AsConfig::Ball_Size / 2;
+   ball_x_pos = Platform.X_Pos + Platform.Width / 2 - ABall::Radius;
    Ball.Init();
    Ball.Set_State(EBS_Normal, ball_x_pos);
    Level.Init();
    Border.Init();
+
+   ABall::Add_Hit_Checker(&Border);
+   ABall::Add_Hit_Checker(&Level);
+   ABall::Add_Hit_Checker(&Platform);
 
    Platform.Set_State(EPS_Normal);
    Platform.Redraw_Platform();
@@ -74,7 +78,7 @@ int AsEngine::On_Key_Down(EKey_Type key_type)
 
       if (Platform.Get_State() == EPS_Ready)
       {
-         ball_x_pos = Platform.X_Pos + Platform.Width / 2 - AsConfig::Ball_Size / 2;
+         ball_x_pos = Platform.X_Pos + Platform.Width / 2 - ABall::Radius;
          Ball.Set_State(EBS_Normal, ball_x_pos);
          Platform.Set_State(EPS_Normal);
       }
@@ -92,7 +96,7 @@ int AsEngine::On_Timer()
    switch (Game_State)
    {
    case EGS_Play_Level:
-      Ball.Move(&Level, &Border, &Platform);
+      Ball.Move();
 
       if (Ball.Get_State() == EBS_Lost)
       {
@@ -116,7 +120,7 @@ int AsEngine::On_Timer()
 
       if (Platform.Get_State() == EPS_Ready)
       {
-         ball_x_pos = Platform.X_Pos + Platform.Width / 2 - AsConfig::Ball_Size / 2;
+         ball_x_pos = Platform.X_Pos + Platform.Width / 2 - ABall::Radius;
          Game_State = EGS_Play_Level;
          Ball.Set_State(EBS_On_Platform, ball_x_pos);
       }
